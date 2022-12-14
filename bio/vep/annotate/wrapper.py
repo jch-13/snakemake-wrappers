@@ -35,11 +35,15 @@ for plugin in snakemake.params.plugins:
 load_plugins = " ".join(map("--plugin {}".format, load_plugins))
 
 if snakemake.output.calls.endswith(".vcf.gz"):
-    fmt = "z"
-elif snakemake.output.calls.endswith(".bcf"):
-    fmt = "b"
+    fmt = "--vcf --compress_output gzip"
+elif snakemake.output.calls.endswith(".vcf"):
+    fmt = "--vcf"
+elif snakemake.output.calls.endswith(".json.gz"):
+    fmt = "--json --compress_output gzip"
+elif snakemake.output.calls.endswith(".json"):
+    fmt = "--json"
 else:
-    fmt = "v"
+    fmt = ""
 
 fasta = snakemake.input.get("fasta", "")
 if fasta:
@@ -65,13 +69,12 @@ shell(
     "(bcftools view '{snakemake.input.calls}' | "
     "vep {extra} {fork} "
     "--format vcf "
-    "--vcf "
+    "{fmt} "
     "{cache} "
     "{gff} "
     "{fasta} "
     "--dir_plugins {plugins} "
     "{load_plugins} "
-    "--output_file STDOUT "
-    "--stats_file {stats} | "
-    "bcftools view -O{fmt} > {snakemake.output.calls}) {log}"
+    "--output_file {snakemake.output.calls} "
+    "--stats_file {stats}) {log}"
 )
