@@ -34,7 +34,9 @@ for plugin in snakemake.params.plugins:
         load_plugins.append(",".join([plugin, snakemake.input.get(plugin.lower(), "")]))
 load_plugins = " ".join(map("--plugin {}".format, load_plugins))
 
-if snakemake.output.calls.endswith(".vcf.gz"):
+if snakemake.output.calls.endswith(".bcf"):
+    fmt = "--bcf"
+elif snakemake.output.calls.endswith(".vcf.gz"):
     fmt = "--vcf --compress_output gzip"
 elif snakemake.output.calls.endswith(".vcf"):
     fmt = "--vcf"
