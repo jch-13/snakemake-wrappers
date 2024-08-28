@@ -34,18 +34,26 @@ for plugin in snakemake.params.plugins:
         load_plugins.append(",".join([plugin, snakemake.input.get(plugin.lower(), "")]))
 load_plugins = " ".join(map("--plugin {}".format, load_plugins))
 
-if snakemake.output.calls.endswith(".bcf"):
-    fmt = "--bcf"
-elif snakemake.output.calls.endswith(".vcf.gz"):
-    fmt = "--vcf --compress_output gzip"
-elif snakemake.output.calls.endswith(".vcf"):
-    fmt = "--vcf"
-elif snakemake.output.calls.endswith(".json.gz"):
-    fmt = "--json --compress_output gzip"
-elif snakemake.output.calls.endswith(".json"):
-    fmt = "--json"
+# Gzip-compress output if requested
+file_path = snakemake.output.calls
+gzip_suffix = ".gz"
+if file_path.endswith() == gzip_suffix:
+    fmt = "--compress_output gzip"
+    file_path = file_path.removesuffix(gzip_suffix)
 else:
     fmt = ""
+
+# Determine output format
+if file_path.endswith(".bcf"):
+    fmt += "--bcf"
+elif file_path.endswith(".vcf"):
+    fmt += "--vcf"
+elif file_path.endswith(".json"):
+    fmt += "--json"
+elif file_path.endswith(".tsv"):
+    fmt += "--tab"
+else:
+    pass
 
 fasta = snakemake.input.get("fasta", "")
 if fasta:
