@@ -37,8 +37,8 @@ load_plugins = " ".join(map("--plugin {}".format, load_plugins))
 # Gzip-compress output if requested
 file_path = snakemake.output.calls
 gzip_suffix = ".gz"
-if file_path.endswith() == gzip_suffix:
-    fmt = "--compress_output gzip"
+if file_path.endswith(gzip_suffix):
+    fmt = "--compress_output gzip "
     file_path = file_path.removesuffix(gzip_suffix)
 else:
     fmt = ""
