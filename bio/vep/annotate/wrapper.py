@@ -39,7 +39,7 @@ file_path = snakemake.output.calls
 gzip_suffix = ".gz"
 if file_path.endswith(gzip_suffix):
     fmt = "--compress_output gzip "
-    file_path = file_path.removesuffix(gzip_suffix)
+    file_path = file_path[:-len(gzip_suffix)]
 else:
     fmt = ""
 
